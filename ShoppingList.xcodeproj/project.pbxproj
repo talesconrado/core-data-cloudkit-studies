@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E94768242537415E0084D9DB /* CustomAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94768232537415E0084D9DB /* CustomAlerts.swift */; };
 		E96E9359253723A2007267FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96E9358253723A2007267FC /* AppDelegate.swift */; };
 		E96E935B253723A2007267FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96E935A253723A2007267FC /* SceneDelegate.swift */; };
 		E96E935D253723A2007267FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96E935C253723A2007267FC /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E94768232537415E0084D9DB /* CustomAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlerts.swift; sourceTree = "<group>"; };
 		E96E9355253723A2007267FC /* ShoppingList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E96E9358253723A2007267FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E96E935A253723A2007267FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				E96E9364253723A2007267FC /* Assets.xcassets */,
 				E96E9366253723A2007267FC /* LaunchScreen.storyboard */,
 				E96E9369253723A2007267FC /* Info.plist */,
+				E94768232537415E0084D9DB /* CustomAlerts.swift */,
 			);
 			path = ShoppingList;
 			sourceTree = "<group>";
@@ -152,6 +155,7 @@
 			files = (
 				E96E9377253728E0007267FC /* CoreDataManager.swift in Sources */,
 				E96E935D253723A2007267FC /* ViewController.swift in Sources */,
+				E94768242537415E0084D9DB /* CustomAlerts.swift in Sources */,
 				E96E9363253723A2007267FC /* ShoppingList.xcdatamodeld in Sources */,
 				E96E937325372503007267FC /* View.swift in Sources */,
 				E96E9359253723A2007267FC /* AppDelegate.swift in Sources */,

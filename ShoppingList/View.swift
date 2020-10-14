@@ -11,6 +11,7 @@ class View: UIView {
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
+        table.tableFooterView = UIView()
         
         return table
     }()
@@ -28,10 +29,10 @@ class View: UIView {
     func setupTableView() {
         addSubview(tableView)
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 20),
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            tableView.leftAnchor.constraint(equalTo: leftAnchor),
-            tableView.rightAnchor.constraint(equalTo: rightAnchor)
+            tableView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+            tableView.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
         ])
     }
 }

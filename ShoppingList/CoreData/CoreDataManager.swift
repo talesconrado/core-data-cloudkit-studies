@@ -10,16 +10,17 @@ import CoreData
 class CoreDataManager {
     var managedContext: NSManagedObjectContext?
     
+    var persistentContainer: NSPersistentContainer?
+    
     init() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        self.managedContext = appDelegate.persistentContainer.viewContext
+        //loadContainer(completion: nil)
     }
     
     func createData(named: String) {
         guard let managedContext = self.managedContext else { return }
-        let itemEntity = NSEntityDescription.entity(forEntityName: "Item", in: managedContext)!
-        let item = NSManagedObject(entity: itemEntity, insertInto: managedContext)
+        let item = Item(context: managedContext)
         item.setValue(named, forKey: "name")
+        item.setValue(Date(), forKey: "createdAt")
         
         do {
             try managedContext.save()
@@ -28,38 +29,39 @@ class CoreDataManager {
         }
     }
     
-    func fetchData() -> [NSManagedObject] {
-        var array: [NSManagedObject] = []
-        guard let managedContext = self.managedContext else {
-            print("Error fetching itens.")
-            return array }
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
-        
-        do {
-            let result = try managedContext.fetch(fetchRequest)
-            for data in result {
-                array.append(data as! NSManagedObject)
+    func loadContainer(completion: (() -> Void)?) {
+        let container = NSPersistentContainer(name: "ShoppingList")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
             }
-        } catch let err as NSError {
-            print("Error fetching itens. \(err)")
-        }
-        
-        return array
+            self.persistentContainer = container
+            self.managedContext = container.viewContext
+
+            if let completion = completion {
+                completion()
+            }
+        })
     }
     
-    func deleteItem(named: String) {
+    func deleteItem(object: NSManagedObject) {
         guard let managedContext = self.managedContext else { return }
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
-        fetchRequest.predicate = NSPredicate(format: "name = %@", named)
-        
+        managedContext.delete(object)
         do {
-            let result = try managedContext.fetch(fetchRequest)
-            let objectToDelete = result[0] as! NSManagedObject
-            managedContext.delete(objectToDelete)
+            try managedContext.save()
+        } catch {
+            print("ERROR: Couldn't save after deletion!")
+        }
+    }
+    
+    func saveContext () {
+        let context = persistentContainer!.viewContext
+        if context.hasChanges {
             do {
-                try managedContext.save()
+                try context.save()
             } catch {
-                print("ERROR: Couldn't save after deletion!")
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
