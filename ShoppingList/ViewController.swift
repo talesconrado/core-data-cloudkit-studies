@@ -124,6 +124,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             let item = fetchedResultsController.object(at: indexPath)
             item.managedObjectContext?.delete(item)
+            dataManager.saveContext()
         }
     }
 }

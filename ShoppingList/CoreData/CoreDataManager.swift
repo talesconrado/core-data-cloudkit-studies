@@ -6,11 +6,12 @@
 //
 import UIKit
 import CoreData
+import CloudKit
 
 class CoreDataManager {
     var managedContext: NSManagedObjectContext?
     
-    var persistentContainer: NSPersistentContainer?
+    var persistentContainer: NSPersistentCloudKitContainer?
     
     init() {
         //loadContainer(completion: nil)
@@ -30,7 +31,7 @@ class CoreDataManager {
     }
     
     func loadContainer(completion: (() -> Void)?) {
-        let container = NSPersistentContainer(name: "ShoppingList")
+        let container = NSPersistentCloudKitContainer(name: "ShoppingList")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -42,6 +43,16 @@ class CoreDataManager {
                 completion()
             }
         })
+        // get the store description
+        guard let description = container.persistentStoreDescriptions.first else {
+            fatalError("Could not retrieve a persistent store description.")
+        }
+
+        // initialize the CloudKit schema
+        let id = "iCloud.com.talesconrado.ShoppingList"
+        let options = NSPersistentCloudKitContainerOptions(containerIdentifier: id)
+        description.cloudKitContainerOptions = options
+        container.viewContext.automaticallyMergesChangesFromParent = true
     }
     
     func deleteItem(object: NSManagedObject) {
