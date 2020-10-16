@@ -46,8 +46,21 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         dataManager.loadContainer {
             self.dismiss(animated: true, completion: nil)
         }
+        try? dataManager.persistentContainer?.viewContext.setQueryGenerationFrom(.current)
+        addRefreshControl()
         fetchingResults()
         setupNavigationBar()
+    }
+    
+    func addRefreshControl() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshing), for: .valueChanged)
+        contentView.tableView.refreshControl = refreshControl
+    }
+    
+    @objc func refreshing(sender: UIRefreshControl) {
+        fetchingResults()
+        sender.endRefreshing()
     }
     
     func fetchingResults() {
