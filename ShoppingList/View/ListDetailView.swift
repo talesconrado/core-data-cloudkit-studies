@@ -1,5 +1,5 @@
 //
-//  View.swift
+//  ListDetailView.swift
 //  ShoppingList
 //
 //  Created by Tales Conrado on 14/10/20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class View: UIView {
+class ListDetailView: UIView {
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false

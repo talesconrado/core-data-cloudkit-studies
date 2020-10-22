@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  ListDetailController.swift
 //  ShoppingList
 //
 //  Created by Tales Conrado on 14/10/20.
@@ -8,12 +8,12 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
+class ListDetailController: UIViewController, NSFetchedResultsControllerDelegate {
     
     let dataManager: CoreDataManager
     
-    lazy var contentView: View = {
-        let view = View()
+    lazy var contentView: ListDetailView = {
+        let view = ListDetailView()
         view.tableView.delegate = self
         view.tableView.dataSource = self
         return view
@@ -88,15 +88,29 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         promptForTitle()
     }
     
-    func promptForTitle() {
-        let ac = UIAlertController(title: "Digite o nome do item", message: nil, preferredStyle: .alert)
+    func promptForTitle(item: Item? = nil) {
+        let ac = UIAlertController(title: "Novo Item", message: nil, preferredStyle: .alert)
         ac.addTextField()
+        ac.textFields![0].placeholder = "Nome"
+        ac.addTextField()
+        ac.textFields![1].placeholder = "Categoria"
+        if let item = item {
+            ac.textFields![0].text = item.name
+            ac.textFields![1].text = item.category
+        }
 
         let submitAction = UIAlertAction(title: "Confirmar", style: .default) { [unowned ac] _ in
             let title = ac.textFields![0]
-            guard let text = title.text else { return }
-            if !text.isEmpty {
-                self.dataManager.createData(named: text)
+            let category = ac.textFields![1]
+            guard let titleText = title.text, let categoryText = category.text  else { return }
+            if !titleText.isEmpty {
+                if item == nil {
+                    let item = Item(context: self.dataManager.managedContext!)
+                    item.name = titleText
+                    item.category = titleText
+                } else {
+                    item?.update(named: titleText, category: categoryText)
+                }
             }
         }
         
@@ -105,17 +119,9 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         ac.addAction(dismissAction)
         present(ac, animated: true)
     }
-    
-    func formatDate(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-        
-        return dateFormatter.string(from: date)
-    }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension ListDetailController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let items = fetchedResultsController.fetchedObjects else { return 0 }
         return items.count
@@ -128,7 +134,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
         }
         cell!.textLabel?.text = item.name
-        cell!.detailTextLabel?.text = formatDate(date: item.createdAt!)
+        cell!.detailTextLabel?.text = item.category
         
         return cell!
     }
@@ -140,11 +146,17 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             dataManager.saveContext()
         }
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = fetchedResultsController.object(at: indexPath)
+        promptForTitle(item: item)
+        let cell = tableView.cellForRow(at: indexPath)
+        cell?.isSelected = false
+    }
 }
 
 // MARK: NSFetchedResultsControllerDelegate
 
-extension ViewController {
+extension ListDetailController {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         contentView.tableView.beginUpdates()
     }
@@ -162,6 +174,10 @@ extension ViewController {
         case .delete:
             if let indexPath = indexPath {
                 contentView.tableView.deleteRows(at: [indexPath], with: .fade)
+            }
+        case .update:
+            if let indexPath = indexPath {
+                contentView.tableView.reloadRows(at: [indexPath], with: .automatic)
             }
         default:
             print("default")
