@@ -11,7 +11,6 @@ class ListDetailView: UIView {
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
-        table.tableFooterView = UIView()
         
         return table
     }()
